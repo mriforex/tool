@@ -29,12 +29,13 @@ check_tools() {
     echo "Checking required tools:"
     for tool in "${tools[@]}"; do
         if command -v "$tool" &> /dev/null; then
-            echo "$tool is installed"
+            echo "$tool is installed at $(which $tool)"
         else
-            echo "$tool is NOT installed"
+            echo "$tool is NOT installed or not in the PATH"
         fi
     done
 }
+
 
 # Check if help is requested
 if [[ "$1" == "-h" ]]; then
