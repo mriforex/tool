@@ -35,6 +35,14 @@ if [[ "$1" == "-i" ]]; then
     else
         echo "sqlmap is not installed"
     fi
+
+    # Check if subfinder is installed
+    if command -v subfinder &> /dev/null
+    then
+        echo "subfinder is installed"
+    else
+        echo "subfinder is not installed"
+    fi
     exit 0
 fi
 
