@@ -28,21 +28,18 @@ if [[ "$1" == "-h" ]]; then
 fi
 
 if [[ "$1" == "-i" ]]; then
-    # Check if sqlmap is installed
-    if command -v sqlmap &> /dev/null
-    then
-        echo "sqlmap is installed"
-    else
-        echo "sqlmap is not installed"
-    fi
-
-    # Check if subfinder is installed
-    if command -v subfinder &> /dev/null
-    then
-        echo "subfinder is installed"
-    else
-        echo "subfinder is not installed"
-    fi
+         tools=("sqlmap" "subfinder" "gf" "ghauri")
+        
+        # Loop through the list of tools
+        for tool in "${tools[@]}"
+        do
+            if command -v "$tool" &> /dev/null
+            then
+                echo "$tool is installed"
+            else
+                echo "$tool is not installed"
+            fi
+        done
     exit 0
 fi
 
