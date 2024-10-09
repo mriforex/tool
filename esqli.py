@@ -8,6 +8,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import random
 import sys
 from datetime import datetime
+import math
 
 VERSION = "v1.2"
 
@@ -24,7 +25,6 @@ def animated_text(text, color='white', speed=0):
     print()
 
 def random_delay():
-    # Reduce delay significantly for faster scanning
     if args.silent:
         time.sleep(0.05)  # Reduced from 60/12 seconds to 0.05 seconds
     else:
@@ -122,12 +122,19 @@ def print_progress():
     if progress % 10 == 0:  # Update progress every 10 URLs to reduce print overhead
         print(f"{colored('Progress:', 'blue')} {progress}/{total_requests} ({percent_complete}%) - {remaining_hours}h:{remaining_minutes:02d}m")
 
-# Use ThreadPoolExecutor if fast flag is set, otherwise use a loop
+# Batch processing to limit the number of threads
+def batch_process(urls, payloads, batch_size=10):
+    total_batches = math.ceil(len(urls) / batch_size)
+    for i in range(total_batches):
+        batch_urls = urls[i * batch_size:(i + 1) * batch_size]
+        with ThreadPoolExecutor(max_workers=10) as executor:  # Safe number of threads
+            futures = [executor.submit(scan_url, url, payload) for url in batch_urls for payload in payloads]
+            for future in as_completed(futures):
+                print_progress()
+
+# Call the batch processing function
 if args.fast:
-    with ThreadPoolExecutor(max_workers=50) as executor:  # Increased thread count for more parallelism
-        futures = [executor.submit(scan_url, url, payload) for url in urls for payload in payloads]
-        for future in as_completed(futures):
-            print_progress()
+    batch_process(urls, payloads, batch_size=10)  # Adjust batch size if needed
 else:
     for url in urls:
         for payload in payloads:
