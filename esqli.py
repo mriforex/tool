@@ -12,7 +12,7 @@ from datetime import datetime
 VERSION = "v1.2"
 
 def print_banner():
-    banner = """"""
+    banner = """"""  # You can add your banner text here
     print(banner)
     animated_text("Project ESQLi Error-Based Tool", 'blue')
 
@@ -36,7 +36,7 @@ parser = argparse.ArgumentParser(description="SQLi Error-Based Tool")
 parser.add_argument("-u", "--urls", required=True, help="Provide a URLs list for testing", type=str)
 parser.add_argument("-p", "--payloads", required=True, help="Provide a list of SQLi payloads for testing", type=str)
 parser.add_argument("-s", "--silent", action="store_true", help="Rate limit to 12 requests per second")
-parser.add_argument("-t", "--threads", type=int, choices=[1, 5, 20], default=5, help="Number of threads for faster scanning (1: low, 5: normal, 20: high)")
+parser.add_argument("-t", "--threads", type=int, choices=range(1, 21), required=True, help="Number of threads (1-20)")
 parser.add_argument("-o", "--output", help="File to save only positive results")
 parser.add_argument("-V", "--version", action="version", version=f"%(prog)s {VERSION}", help="Display version information and exit")
 
@@ -152,10 +152,10 @@ def scan_url(url):
             percent_complete = round(progress / total_requests * 100, 2)
             print(f"{colored('Progress:', 'blue')} {progress}/{total_requests} ({percent_complete}%) - {remaining_hours}h:{remaining_minutes:02d}m")
 
-# Use ThreadPoolExecutor with specified number of threads
+# Use ThreadPoolExecutor based on the user-specified number of threads
 with ThreadPoolExecutor(max_workers=args.threads) as executor:
     executor.map(scan_url, urls)
 
 end_time = time.time()
 total_time = end_time - start_time
-print(colored(f"Scanning completed in {total_time:.2f} seconds.", 'yellow'))
+print(colored(f"\nTotal Time: {total_time:.2f} seconds", 'yellow'))
