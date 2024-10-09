@@ -138,6 +138,7 @@ def scan_url(url):
                     with open(output_file, 'a') as file:
                         file.write(url_modified + '\n')
                 else:
+                    # Print the URL and payload if it's not vulnerable
                     print(colored(f"URL: {url_modified} | Payload: {payload} | Status: safe", 'green'))
 
             random_delay()
